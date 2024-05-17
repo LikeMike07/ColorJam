@@ -1,5 +1,5 @@
 const prod = process.env.NODE_ENV === 'production';
-
+const Dotenv = require('dotenv-webpack');
 const path = require('path')
 
 module.exports = {
@@ -27,5 +27,7 @@ module.exports = {
     ]
   },
   devtool: prod ? undefined : 'source-map',
-  plugins: [],
+  plugins: [
+    new Dotenv(),
+  ],
 };
