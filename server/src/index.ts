@@ -4,9 +4,10 @@ import cors from "cors";
 require("dotenv").config();
 
 import { authRouter, userRouter } from "./routes";
+import path from "path";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : '*';
 
 app.use(cors({
@@ -18,13 +19,11 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, '../../client/dist')));
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 
-app.get("/", (_req, res) => {
-  res.send("Hello World");
-});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

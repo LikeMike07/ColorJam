@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { generateRandomString } from "./util";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const SPOTIFY_AUTH_URL = 'https://accounts.spotify.com/authorize';
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const SPOTIFY_REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI || 'http://localhost:3008/auth/callback';
-const CLIENT_URL = process.env.CLIENT_HOME_URL || 'http://localhost:3000';
+const CLIENT_URL = process.env.CLIENT_HOME_URL || 'http://localhost:3008';
 
 const SCOPES = [
   'ugc-image-upload',
@@ -25,6 +25,7 @@ const SCOPES = [
 const authRouter = Router();
 
 authRouter.get("/login", (_req, res) => {
+  console.log('login');
   let state = generateRandomString(16);
   res.cookie("spotify_auth_state", state);
 
@@ -33,7 +34,8 @@ authRouter.get("/login", (_req, res) => {
     client_id: SPOTIFY_CLIENT_ID ?? '',
     scope: SCOPES.join(' '),
     redirect_uri: SPOTIFY_REDIRECT_URI,
-    state: state
+    state: state,
+    show_dialog: 'true'
   });
 
   res.redirect(`${SPOTIFY_AUTH_URL}?${queryParams.toString()}`)
@@ -78,6 +80,31 @@ authRouter.get("/callback", async (req, res) => {
         })
       );
     }
+  }
+});
+
+authRouter.post("/refresh", async (req, res) => {
+  let refresh_token = req.cookies['spotify_refresh_token'];
+
+  let authOptions = new URLSearchParams({
+    grant_type: 'refresh_token',
+    refresh_token: refresh_token
+  });
+
+  const headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Authorization': `Basic ${Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString('base64')}`
+  }
+
+  try {
+    const response = await axios.post('https://accounts.spotify.com/api/token', {
+        grant_type: 'refresh_token',
+        refresh_token: refresh_token
+    }, {headers: headers})
+    res.cookie('spotify_access_token', response.data.access_token, {maxAge: response.data.expires_in * 1000});
+    res.send(response.data);
+  } catch (error) {
+    res.status(400).send(error);
   }
 });
 

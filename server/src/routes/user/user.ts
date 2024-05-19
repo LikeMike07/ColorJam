@@ -5,7 +5,7 @@ const SPOTIFY_BASE = 'https://api.spotify.com/v1'
 const userRouter = Router();
 
 userRouter.get('/', (req, res) => {
-    const access_token = req.cookies.access_token;
+    const access_token = req.cookies['spotify_access_token'];
 
     axios.get(`${SPOTIFY_BASE}/me`, {
       headers: {

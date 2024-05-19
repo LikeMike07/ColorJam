@@ -1,6 +1,7 @@
 const prod = process.env.NODE_ENV === 'production';
 const Dotenv = require('dotenv-webpack');
 const path = require('path')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 module.exports = {
   mode: prod ? 'production' : 'development',
@@ -29,5 +30,6 @@ module.exports = {
   devtool: prod ? undefined : 'source-map',
   plugins: [
     new Dotenv(),
+    new ReactRefreshWebpackPlugin(),
   ],
 };
