@@ -6,7 +6,7 @@ const SPOTIFY_AUTH_URL = 'https://accounts.spotify.com/authorize';
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const SPOTIFY_REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI || 'http://localhost:3008/auth/callback';
-const CLIENT_URL = process.env.CLIENT_HOME_URL || 'http://localhost:3008';
+const CLIENT_URL = process.env.CLIENT_HOME_URL || 'http://localhost:3000';
 
 const SCOPES = [
   'ugc-image-upload',
@@ -84,8 +84,10 @@ authRouter.get("/callback", async (req, res) => {
 });
 
 authRouter.post("/refresh", async (req, res) => {
-  let refresh_token = req.cookies['spotify_refresh_token'];
+  let refresh_token = req.body.refresh_token || null;
+  if (!refresh_token) throw new Error('No refresh token provided');
 
+  !refresh_token && res.status(400).send('No refresh token provided');
   let authOptions = new URLSearchParams({
     grant_type: 'refresh_token',
     refresh_token: refresh_token
@@ -104,7 +106,7 @@ authRouter.post("/refresh", async (req, res) => {
     res.cookie('spotify_access_token', response.data.access_token, {maxAge: response.data.expires_in * 1000});
     res.send(response.data);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400);
   }
 });
 

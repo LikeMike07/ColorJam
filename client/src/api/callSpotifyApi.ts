@@ -1,15 +1,19 @@
 import axios, { AxiosError } from "axios";
+import { Cookies } from "react-cookie";
 
 type RequestOptions = {
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
     body?: Record<string, any>;
 }
 
-const BE_BASE_URL = process.env.BE_BASE_URL || 'http://localhost:3005';
+const BE_BASE_URL = process.env.BE_BASE_URL || 'http://localhost:3008';
 
-export default async function callSpotifyApi(endpoint: string, options: RequestOptions) {
-    const refresh_token = localStorage.getItem('spotify_refresh_token');
-    const access_token = localStorage.getItem('spotify_access_token');
+export default async function callSpotifyApi(endpoint: string, options?: RequestOptions) {
+    const cookies =  new Cookies();
+    const access_token = cookies.get('spotify_access_token');
+    const refresh_token = cookies.get('spotify_refresh_token');
+
+    console.log('Access token', access_token);
 
     const axiosInstance = axios.create({
         baseURL: BE_BASE_URL,
@@ -23,7 +27,6 @@ export default async function callSpotifyApi(endpoint: string, options: RequestO
         const response = await axiosInstance.request({url: endpoint, ...options})
         if (response.status >= 200 && response.status < 300) return response.data;
         else if (response.status >= 400) new Error(response.statusText);
-
     } catch (error) {
         if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError;
@@ -32,8 +35,8 @@ export default async function callSpotifyApi(endpoint: string, options: RequestO
                 try {
                     console.log('Refreshing token', localStorage.getItem('spotify_refresh_token'));
                     const refreshResponse = await axiosInstance.post(`${BE_BASE_URL}/auth/refresh`, {refresh_token: refresh_token});
-                    localStorage.setItem('spotify_access_token', refreshResponse.data.access_token);
-                    return callSpotifyApi(endpoint, options);
+                    cookies.set('spotify_access_token', refreshResponse.data.access_token, {maxAge: refreshResponse.data.expires_in * 1000});
+                    // return callSpotifyApi(endpoint, options);
 
                 } catch (error) {
                     throw console.error('Failed to refresh token', error);

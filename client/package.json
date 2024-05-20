@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "npx webpack --watch",
+    "start": "webpack serve --mode development",
     "build": "NODE_ENV=production webpack"
   },
   "author": "",
@@ -11,10 +11,12 @@
   "description": "",
   "dependencies": {
     "@tanstack/react-query": "^5.36.2",
+    "@tanstack/react-query-devtools": "^5.37.1",
     "@types/axios": "^0.14.0",
     "axios": "^1.6.8",
     "dotenv-webpack": "^8.1.0",
     "react": "^18.3.1",
+    "react-cookie": "^7.1.4",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1"
   },
