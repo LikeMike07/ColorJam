@@ -5,7 +5,7 @@ import axios, { AxiosError } from "axios";
 const SPOTIFY_AUTH_URL = 'https://accounts.spotify.com/authorize';
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-const SPOTIFY_REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI || 'http://localhost:3008/auth/callback';
+const SPOTIFY_REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI || 'http://localhost:3005/auth/callback';
 const CLIENT_URL = process.env.CLIENT_HOME_URL || 'http://localhost:3000';
 
 const SCOPES = [
@@ -85,7 +85,6 @@ authRouter.get("/callback", async (req, res) => {
 
 authRouter.post("/refresh", async (req, res) => {
   let refresh_token = req.body.refresh_token || null;
-  if (!refresh_token) throw new Error('No refresh token provided');
 
   !refresh_token && res.status(400).send('No refresh token provided');
   let authOptions = new URLSearchParams({

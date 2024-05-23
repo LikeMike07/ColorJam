@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 require("dotenv").config();
 
-import { authRouter, userRouter } from "./routes";
+import { authRouter, colorsRouter, userRouter, artistRouter } from "./routes";
 import path from "path";
 
 const app = express();
@@ -23,6 +23,8 @@ app.use(express.static(path.join(__dirname, '../../client/dist')));
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
+app.use("/colors", colorsRouter)
+app.use("/artists", artistRouter);
 
 
 app.listen(PORT, () => {

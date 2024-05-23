@@ -31,6 +31,10 @@ module.exports = {
         include: path.resolve(__dirname, 'src'),
         use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
+      {
+        test: /\.worker.js$/,
+        use: { loader: 'worker-loader' },
+      }
     ]
   },
   devtool: prod ? undefined : 'source-map',

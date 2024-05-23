@@ -1,20 +1,15 @@
-import axios, { AxiosError } from "axios";
+import axios, { Axios, AxiosError, AxiosRequestConfig } from "axios";
 import { Cookies } from "react-cookie";
 
-type RequestOptions = {
-    method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-    body?: Record<string, any>;
-}
+interface RequestOptions extends AxiosRequestConfig {}
 
-const BE_BASE_URL = process.env.BE_BASE_URL || 'http://localhost:3008';
+const BE_BASE_URL = process.env.BE_BASE_URL || 'http://localhost:3005';
 
 export default async function callSpotifyApi(endpoint: string, options?: RequestOptions) {
     const cookies =  new Cookies();
     const access_token = cookies.get('spotify_access_token');
     const refresh_token = cookies.get('spotify_refresh_token');
-
-    console.log('Access token', access_token);
-
+    
     const axiosInstance = axios.create({
         baseURL: BE_BASE_URL,
         headers: {
@@ -33,11 +28,10 @@ export default async function callSpotifyApi(endpoint: string, options?: Request
 
             if (axiosError.response?.status === 401) {
                 try {
-                    console.log('Refreshing token', localStorage.getItem('spotify_refresh_token'));
+                    console.log('Refreshing token...');
                     const refreshResponse = await axiosInstance.post(`${BE_BASE_URL}/auth/refresh`, {refresh_token: refresh_token});
                     cookies.set('spotify_access_token', refreshResponse.data.access_token, {maxAge: refreshResponse.data.expires_in * 1000});
-                    // return callSpotifyApi(endpoint, options);
-
+                    return callSpotifyApi(endpoint, options);
                 } catch (error) {
                     throw console.error('Failed to refresh token', error);
                 }
