@@ -31,7 +31,7 @@ export default async function callSpotifyApi(endpoint: string, options?: Request
                     console.log('Refreshing token...');
                     const refreshResponse = await axiosInstance.post(`${BE_BASE_URL}/auth/refresh`, {refresh_token: refresh_token});
                     cookies.set('spotify_access_token', refreshResponse.data.access_token, {maxAge: refreshResponse.data.expires_in * 1000});
-                    return callSpotifyApi(endpoint, options);
+                    // return callSpotifyApi(endpoint, options);
                 } catch (error) {
                     throw console.error('Failed to refresh token', error);
                 }
