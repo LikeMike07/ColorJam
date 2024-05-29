@@ -79,11 +79,11 @@ export default function Dashboard() {
         <Header />
         <div className="w-full max-w-4xl">
             <TabGroup>
-                <TabList className={'w-full flex justify-around bg-black/40  rounded-full overflow-clip'}>
-                    <Tab className={'data-[selected]:bg-white/20 w-full p-3'}>Top Artists</Tab>
-                    <Tab className={' data-[selected]:bg-white/20 w-full p-3'}>Top Tracks</Tab>
+                <TabList className={'w-full flex justify-around bg-black/40 backdrop-blur-lg rounded-full overflow-clip'}>
+                    <Tab className={'data-[selected]:bg-white/20 w-full p-3 focus:outline-none'}>Top Artists</Tab>
+                    <Tab className={' data-[selected]:bg-white/20 w-full p-3 focus:outline-none'}>Top Tracks</Tab>
                 </TabList>
-                <TabPanels className={'mt-5'}>
+                <TabPanels className={'mt-5 focus:outline-none'}>
                     <TabPanel>
                         <ArtistList artists={topArtists} isLoading={isTopArtistsLoading} getColorPalette={getColorPalette}/>
                     </TabPanel>
