@@ -1,3 +1,5 @@
+import { Colors } from './colors';
+
 export type User = {
     display_name: string;
     external_urls: {
@@ -23,5 +25,6 @@ export type User = {
         filter_locked: boolean;
     };
     email: string;
+    colors: Colors;
 };
 

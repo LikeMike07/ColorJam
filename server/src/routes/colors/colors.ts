@@ -12,9 +12,9 @@ colorsRouter.get("/", (req, res) => {
     
     const vibrant = new Vibrant(`${decodeURI(imageUrl as string)}`);
     vibrant.getPalette().then(palette => {
-        const colors: Record<string, {rgb: any}> = {};
+        const colors: Record<string, {hex: string}> = {};
         for (const key in palette) {
-            colors[key] = {rgb: palette[key]?.rgb ?? ''}
+            colors[key] = {hex: palette[key]?.getHex() ?? ''};
         }
         res.json(colors);
     }).catch(error => {

@@ -44,10 +44,11 @@ userRouter.get('/top-artists', (req, res) => {
     }
   })
     .then((response) => {
-      getPreviewsForArtists(response.data.items, access_token as string)
-        .then((artists) => {
-          res.send(artists);
-        })
+      res.send(response.data.items);
+      // getPreviewsForArtists(response.data.items, access_token as string)
+      //   .then((artists) => {
+      //     res.send(artists);
+      //   })
     })
     .catch(error => {
       if (error.response.status === 401) {

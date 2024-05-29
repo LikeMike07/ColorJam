@@ -1,3 +1,3 @@
-export type Colors = Record<ColorNames, {rgb: number[]}>;
+export type Colors = Record<ColorNames, {hex: string}>;
 
-type ColorNames = 'Vibrant' | 'LightVibrant' | 'DarkVibrant' | 'Muted' | 'LightMuted' | 'DarkMuted';
+export type ColorNames = 'Vibrant' | 'LightVibrant' | 'DarkVibrant' | 'Muted' | 'LightMuted' | 'DarkMuted';
