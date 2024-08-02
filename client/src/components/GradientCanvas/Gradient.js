@@ -319,18 +319,21 @@ function normalizeColor(hexCode) {
         })
     }
     async destroy() {
-        // Stop any ongoing animations
+        // Pause any ongoing animations
         this.pause();
-
+    
+        // Save the current animation state
+        const currentTime = this.animationTime;
+    
         // Remove event listeners
         window.removeEventListener('resize', this.resize);
         window.removeEventListener('scroll', this.handleScroll);
         this.el.removeEventListener('mousedown', this.handleMouseDown);
         window.removeEventListener('mouseup', this.handleMouseUp);
-
+    
         // Clear the timeout for scrolling
         clearTimeout(this.scrollingTimeout);
-
+    
         // Nullify references to shaders, geometry, and other properties
         this.shaderFiles = null;
         this.vertexShader = null;
@@ -342,8 +345,38 @@ function normalizeColor(hexCode) {
         this.material = null;
         this.geometry = null;
         this.scrollObserver = null;
-
+    
+        // Preserve animation time
+        this.preservedAnimationTime = currentTime;
     }
+    async recreateGradient() {
+        if (this.preservedAnimationTime !== undefined) {
+            this.animationTime = this.preservedAnimationTime;
+        } else {
+            this.animationTime = 0;
+        }
+
+        this.createGradientMaterial();
+        this.resume();
+    }
+
+    pause() {
+        this.isPaused = true;
+    }
+
+    resume() {
+        this.isPaused = false;
+    }
+
+    animate() {
+        const deltaTime = getDeltaTime();
+        if (!this.isPaused) {
+            this.animationTime += deltaTime;
+            this.minigl.render();
+        }
+        requestAnimationFrame(() => this.animate());
+    }
+    
     async initGradient(selector) {
         this.el = document.querySelector(selector);
         this.connect();

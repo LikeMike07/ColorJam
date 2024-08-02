@@ -25,8 +25,6 @@ export default function ArtistList({
         : artists.map((artist) => (
             <div
               onMouseEnter={() => {
-                if (artist.topSong?.preview_url)
-                  console.log(artist.topSong.preview_url);
                 getColorPalette(artist.images[1].url);
               }}
               onMouseLeave={() => {

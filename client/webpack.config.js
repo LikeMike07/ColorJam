@@ -8,7 +8,7 @@ module.exports = {
   entry: './src/index.tsx',
   devServer: {
     static: path.join(__dirname, 'dist'),
-    port: 3000,
+    port: 4000,
     historyApiFallback: true,
   },
   output: {
